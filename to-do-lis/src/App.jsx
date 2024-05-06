@@ -1,4 +1,6 @@
 import { useState } from "react";
+import ToDo from "./components/toDo";
+import ToDoForm from "./components/toDoForm";
 import "./App.css";
 
 function App() {
@@ -22,23 +24,51 @@ function App() {
       isCompleted: false,
     },
   ]);
+
+  const addToDos = (text, category) => {
+    const newToDos = [
+      ...toDo,
+      {
+        id: Math.floor(Math.random() * 1000),
+        text,
+        category,
+        isCompleted: false,
+      },
+    ];
+
+    setToDo(newToDos);
+  };
+
+  const removeToDo = (id) => {
+    const newToDos = [...toDo];
+    const filteredToDos = newToDos.filter((toDo) =>
+      toDo.id !== id ? toDo : null
+    );
+    setToDo(filteredToDos);
+  };
+
+  const completeToDo = (id) => {
+    const newToDos = [...toDo];
+    newToDos.map((toDo) =>
+      toDo.id === id ? (toDo.isCompleted = !toDo.isCompleted) : toDo
+    );
+    setToDo(newToDos);
+  };
+
   return (
     <div className="app">
       <h1>Lista de tarefas</h1>
       <div className="toDoList">
         {toDo.map((toDo) => (
-          <div className="toDo">
-            <div className="content">
-              <p>{toDo.text}</p>
-              <p className="category">({toDo.category})</p>
-            </div>
-            <div>
-              <button>Completar</button>
-              <button>x</button>
-            </div>
-          </div>
+          <ToDo
+            key={toDo.id}
+            toDo={toDo}
+            completeToDo={completeToDo}
+            removeToDo={removeToDo}
+          />
         ))}
       </div>
+      <ToDoForm addToDos={addToDos} />
     </div>
   );
 }
